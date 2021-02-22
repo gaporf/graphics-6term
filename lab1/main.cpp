@@ -55,10 +55,12 @@ struct ppm_image {
 		input.ignore();
 		input.read(reinterpret_cast<char*>(data), length);
 		if (input.fail()) {
+			delete data;
 			throw std::exception("Incorrect format of file");
 		}
 		input.ignore();
 		if (!input.eof()) {
+			delete data;
 			throw std::exception("Incorrect format of file");
 		}
 	}
