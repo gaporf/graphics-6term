@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <cstring>
 #include <string>
 #include <exception>
 #include <algorithm>
@@ -7,17 +8,17 @@
 static uint32_t get_number(char const* s) {
 	char const* cur = s;
 	if (*cur == '\0') {
-		throw std::exception("Incorrect format of file");
+		throw std::runtime_error("Incorrect format of file");
 	}
 	while (*cur != '\0') {
 		if (!std::isdigit(*cur)) {
-			throw std::exception("Incorrect format of file");
+			throw std::runtime_error("Incorrect format of file");
 		}
 		cur++;
 	}
 	uint32_t num = std::stoul(s);
 	if (num == 0) {
-		throw std::exception("Incorrect format of file");
+		throw std::runtime_error("Incorrect format of file");
 	}
 	return num;
 }
@@ -26,7 +27,7 @@ struct ppm_image {
 	explicit ppm_image(char const* filename) {
 		std::ifstream input(filename, std::ios_base::binary);
 		if (input.fail()) {
-			throw std::exception("Could not open input file");
+			throw std::runtime_error("Could not open input file");
 		}
 		char input_str[128];
 		input.get(input_str, 128, '\n');
@@ -35,7 +36,7 @@ struct ppm_image {
 		} else if (strcmp(input_str, "P6") == 0) {
 			type = 3;
 		} else {
-			throw std::exception("Incorrect format of file");
+			throw std::runtime_error("Incorrect format of file");
 		}
 		input.ignore();
 		input.get(input_str, 128, ' ');
@@ -50,29 +51,29 @@ struct ppm_image {
 		try {
 			data = new uint8_t[length];
 		} catch (...) {
-			throw std::exception("Could not allocate memory");
+			throw std::runtime_error("Could not allocate memory");
 		}
 		input.ignore();
 		input.read(reinterpret_cast<char*>(data), length);
 		if (input.fail()) {
-			delete data;
-			throw std::exception("Incorrect format of file");
+			delete[] data;
+			throw std::runtime_error("Incorrect format of file");
 		}
 		input.ignore();
 		if (!input.eof()) {
-			delete data;
-			throw std::exception("Incorrect format of file");
+			delete[] data;
+			throw std::runtime_error("Incorrect format of file");
 		}
 	}
 
 	~ppm_image() {
-		delete data;
+		delete[] data;
 	}
 
 	void print_to_file(char const* filename) {
 		std::ofstream output(filename, std::ios_base::binary);
 		if (!output.is_open()) {
-			throw std::exception("Could not open the file");
+			throw std::runtime_error("Could not open the file");
 		}
 		output << 'P' << (type == 1 ? '5' : '6') << '\n';
 		output << w << ' ' << h << '\n';
@@ -81,7 +82,7 @@ struct ppm_image {
 		if (output.fail()) {
 			output.close();
 			std::remove(filename);
-			throw std::exception("Could not write to the file");
+			throw std::runtime_error("Could not write to the file");
 		}
 	}
 
@@ -132,10 +133,10 @@ struct ppm_image {
 				}
 			}
 			std::swap(w, h);
-			delete data;
+			delete[] data;
 			data = new_data;
 		} catch (...) {
-			throw std::exception("Could not allocate memory");
+			throw std::runtime_error("Could not allocate memory");
 		}
 	}
 
@@ -151,10 +152,10 @@ struct ppm_image {
 				}
 			}
 			std::swap(w, h);
-			delete data;
+			delete[] data;
 			data = new_data;
 		} catch (...) {
-			throw std::exception("Could not allocate memory");
+			throw std::runtime_error("Could not allocate memory");
 		}
 	}
 
