@@ -57,7 +57,7 @@ int main(int argc, char* argv[]) {
 		if (num_input_files == 1) {
 			image = std::move(pnm_image(input_filename, initial_color_model));
 		} else {
-			size_t pos = input_filename.find_first_of('.');
+			size_t pos = input_filename.find_last_of('.');
 			if (pos == std::string::npos) throw std::runtime_error("Incorrect name of file");
 			std::string pattern = input_filename.substr(0, pos);
 			std::string extension = input_filename.substr(pos);
@@ -69,7 +69,7 @@ int main(int argc, char* argv[]) {
 		if (num_output_files == 1) {
 			image.print_to_file(output_filename, final_color_model);
 		} else {
-			size_t pos = output_filename.find_first_of('.');
+			size_t pos = output_filename.find_last_of('.');
 			if (pos == std::string::npos) throw std::runtime_error("Incorrect name of file");
 			std::string pattern = output_filename.substr(0, pos);
 			std::string extension = output_filename.substr(pos);
