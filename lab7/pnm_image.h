@@ -22,7 +22,6 @@ private:
 	uint32_t type;
 	uint32_t w, h;
 	uint16_t depth;
-	size_t bit_num;
 
 	std::vector<uint8_t> buf;
 	std::vector<uint8_t> uncompressed_data;

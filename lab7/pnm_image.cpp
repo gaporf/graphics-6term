@@ -217,7 +217,7 @@ void pnm_image::inflate() {
 			stream.next_out = out;
 			ret = ::inflate(&stream, Z_NO_FLUSH);
 			if (ret == Z_STREAM_ERROR) throw std::runtime_error("Could not inflate");
-			if (ret == Z_NEED_DICT || ret == Z_DATA_ERROR || ret == Z_MEM_ERROR) throw std::runtime_error("Another shit with inflate");
+			if (ret == Z_NEED_DICT || ret == Z_DATA_ERROR || ret == Z_MEM_ERROR) throw std::runtime_error("Error while inflating");
 			size_t have = K - stream.avail_out;
 			for (size_t i = 0; i < have; i++) {
 				uncompressed_data.push_back(out[i]);
